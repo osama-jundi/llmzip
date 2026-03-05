@@ -76,10 +76,10 @@ def compress_llm(
         }
 
 
-# ─── Гипотеза H1: Больше модель → ниже BPC ────────────────
+
 
 def test_h1(input_path: str, model_keys: list[str], device: str = None) -> list[dict]:
-    """H1: Увеличение размера модели приводит к снижению BPC."""
+
     print("\n" + "=" * 70)
     print("ГИПОТЕЗА H1: Увеличение размера модели → снижение BPC")
     print("=" * 70)
@@ -96,7 +96,7 @@ def test_h1(input_path: str, model_keys: list[str], device: str = None) -> list[
             print(f"  ОШИБКА: {e}")
             results.append({"method": key, "hypothesis": "H1", "error": str(e)})
 
-    # Проверка: BPC должен убывать с ростом модели
+
     valid = [r for r in results if "error" not in r]
     if len(valid) >= 2:
         bpcs = [r["bpc"] for r in valid]
@@ -107,7 +107,7 @@ def test_h1(input_path: str, model_keys: list[str], device: str = None) -> list[
     return results
 
 def test_h2(input_path: str, device: str = None) -> list[dict]:
-    """H2: GPT-2 обеспечивает BPC ниже GZIP/BZIP2/LZMA."""
+
     print("\n" + "=" * 70)
     print("ГИПОТЕЗА H2: GPT-2 (124M) < GZIP/BZIP2/LZMA по BPC")
     print("=" * 70)
@@ -143,7 +143,7 @@ def test_h2(input_path: str, device: str = None) -> list[dict]:
 
 
 def test_h3(input_path: str, model_keys: list[str], device: str = None) -> list[dict]:
-    """H3: LLM-сжатие на порядки медленнее традиционных методов."""
+
     print("\n" + "=" * 70)
     print("ГИПОТЕЗА H3: LLM на порядки медленнее традиционных")
     print("=" * 70)
@@ -183,7 +183,7 @@ def test_h3(input_path: str, model_keys: list[str], device: str = None) -> list[
 
 
 def test_h4(input_path: str, model_key: str = "gpt2", device: str = None) -> list[dict]:
-    """H4: Скользящее окно лучше блочного (формула 2.20)."""
+
     print("\n" + "=" * 70)
     print("ГИПОТЕЗА H4: Скользящее окно > блочное сжатие")
     print(f"  Модель: {model_key}")
@@ -216,7 +216,7 @@ def test_h4(input_path: str, model_key: str = "gpt2", device: str = None) -> lis
 
 
 def save_results(results: list[dict], output_dir: str):
-    """Сохранить в CSV и JSON."""
+
     os.makedirs(output_dir, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
@@ -226,7 +226,7 @@ def save_results(results: list[dict], output_dir: str):
         json.dump(results, f, indent=2, ensure_ascii=False, default=str)
     print(f"\nJSON: {json_path}")
 
-    # CSV
+
     csv_path = os.path.join(output_dir, f"results_{timestamp}.csv")
     valid = [r for r in results if "error" not in r]
     if valid:
@@ -241,7 +241,7 @@ def save_results(results: list[dict], output_dir: str):
 
 
 def print_summary(results: list[dict]):
-    """Печать итоговой таблицы."""
+
     valid = [r for r in results if "error" not in r]
     if not valid:
         print("Нет результатов.")

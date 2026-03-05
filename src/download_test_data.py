@@ -65,7 +65,7 @@ def _progress_hook(block_num, block_size, total_size):
 
 
 def cut_files(text8_path: str, output_dir: str) -> dict:
-    """Нарезать text8 на файлы заданных размеров."""
+
     with open(text8_path, "r", encoding="utf-8") as f:
         full_text = f.read()
 
@@ -75,7 +75,7 @@ def cut_files(text8_path: str, output_dir: str) -> dict:
     for name, size_bytes in SIZES.items():
         chunk = full_text[:size_bytes]
 
-        # Обрезаем до последнего полного слова
+
         last_space = chunk.rfind(" ")
         if last_space > size_bytes * 0.9:
             chunk = chunk[:last_space]
