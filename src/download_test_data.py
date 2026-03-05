@@ -18,7 +18,6 @@ SIZES = {
 
 
 def download_text8(output_dir: str) -> str:
-    """Скачать text8.zip и распаковать."""
     os.makedirs(output_dir, exist_ok=True)
     text8_path = os.path.join(output_dir, "text8")
 
