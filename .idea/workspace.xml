@@ -4,9 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="024648bb-ed53-41d8-9a4b-0d750508bb95" name="Changes" comment="testsanddownloads2">
+    <list default="true" id="024648bb-ed53-41d8-9a4b-0d750508bb95" name="Changes" comment="testsanddownloads3">
+      <change afterPath="$PROJECT_DIR$/download_models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/download_test_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/download_test_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/download_models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/download_test_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/download_test_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/llmzip/models/hf_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/llmzip/models/hf_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/llmzip/models/registry.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/llmzip/models/registry.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/run_experiments.py" beforeDir="false" afterPath="$PROJECT_DIR$/run_experiments.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,18 +49,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python tests.Python tests in test_smoke.py.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "D:/llmzip/src"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python tests.Python tests in test_smoke.py.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/llmzip&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\llmzip" />
       <recent name="D:\llmzip\src" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -100,7 +107,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772725734906</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="testsanddownloads2">
+      <option name="closed" value="true" />
+      <created>1772726571106</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1772726571106</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

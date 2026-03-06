@@ -1,9 +1,26 @@
+import os
 from typing import Optional
+from pathlib import Path
 
 import torch
 
 from .base import BaseProbabilityModel
 from .hf_model import HuggingFaceCausalModel
+
+
+# Автоопределение папки кеша моделей внутри проекта.
+# Ищем models_cache/ поднимаясь от текущего файла:
+#   registry.py → models/ → llmzip/ → src/ → PROJECT_ROOT/models_cache
+def _find_project_cache() -> Optional[str]:
+    current = Path(__file__).resolve()
+    # Поднимаемся до корня проекта (ищем pyproject.toml или models_cache/)
+    for parent in [current.parent.parent.parent.parent,  # src/llmzip/models/ → project root
+                   current.parent.parent.parent,          # если структура другая
+                   Path.cwd()]:                           # или текущая директория
+        cache_dir = parent / "models_cache"
+        if cache_dir.exists() and cache_dir.is_dir():
+            return str(cache_dir)
+    return None
 
 
 MODEL_CONFIGS = {
@@ -53,6 +70,7 @@ MODEL_CONFIGS = {
 def create_model(
     model_key: str,
     device: Optional[str] = None,
+    cache_dir: Optional[str] = None,
 ) -> BaseProbabilityModel:
     if model_key not in MODEL_CONFIGS:
         available = ", ".join(sorted(MODEL_CONFIGS.keys()))
@@ -63,11 +81,16 @@ def create_model(
 
     config = MODEL_CONFIGS[model_key]
 
+    # Приоритет: аргумент → models_cache/ в проекте → HuggingFace default
+    if cache_dir is None:
+        cache_dir = _find_project_cache()
+
     model = HuggingFaceCausalModel(
         model_name=config["hf_name"],
         device=device,
         torch_dtype=config.get("torch_dtype"),
         trust_remote_code=config.get("trust_remote_code", False),
+        cache_dir=cache_dir,
     )
 
     return model

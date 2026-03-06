@@ -20,10 +20,12 @@ class HuggingFaceCausalModel(BaseProbabilityModel):
         device: Optional[str] = None,
         torch_dtype: Optional[torch.dtype] = None,
         trust_remote_code: bool = False,
+        cache_dir: Optional[str] = None,
     ):
         super().__init__(model_name, device)
         self._torch_dtype = torch_dtype
         self._trust_remote_code = trust_remote_code
+        self._cache_dir = cache_dir
 
         self._kv_cache = None
         self._cached_token_ids: list[int] = []
@@ -31,10 +33,13 @@ class HuggingFaceCausalModel(BaseProbabilityModel):
     def load(self) -> None:
         print(f"[MODEL] Загрузка модели: {self.model_name}")
         print(f"[MODEL] Устройство: {self.device}")
+        if self._cache_dir:
+            print(f"[MODEL] Кеш: {self._cache_dir}")
 
         self._tokenizer = AutoTokenizer.from_pretrained(
             self.model_name,
             trust_remote_code=self._trust_remote_code,
+            cache_dir=self._cache_dir,
         )
 
         dtype = self._torch_dtype
@@ -48,6 +53,7 @@ class HuggingFaceCausalModel(BaseProbabilityModel):
             self.model_name,
             torch_dtype=dtype,
             trust_remote_code=self._trust_remote_code,
+            cache_dir=self._cache_dir,
         ).to(self.device)
 
         self._model.eval()
@@ -137,4 +143,5 @@ class HuggingFaceCausalModel(BaseProbabilityModel):
         info = super().get_model_info()
         info["dtype"] = str(self._torch_dtype or "auto")
         info["kv_cache"] = True
+        info["cache_dir"] = self._cache_dir
         return info

@@ -12,12 +12,19 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent / "src"))
+PROJECT_ROOT = Path(__file__).parent
+MODELS_CACHE = str(PROJECT_ROOT / "models_cache")
+
+if os.path.exists(MODELS_CACHE):
+    os.environ["HF_HOME"] = MODELS_CACHE
+    os.environ["TRANSFORMERS_CACHE"] = MODELS_CACHE
+    os.environ["HUGGINGFACE_HUB_CACHE"] = MODELS_CACHE
+
+sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from llmzip import Compressor, Decompressor, ContextStrategy
 
 def compress_traditional(data: bytes) -> list[dict]:
-
     results = []
     original = len(data)
 
@@ -44,7 +51,6 @@ def compress_llm(
     context_strategy: ContextStrategy = ContextStrategy.SLIDING_WINDOW,
     device: str = None,
 ) -> dict:
-    """Сжать файл с помощью LLM. Вернуть результат."""
     original_size = os.path.getsize(input_path)
 
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -75,11 +81,7 @@ def compress_llm(
             "num_tokens": comp["num_tokens"],
         }
 
-
-
-
 def test_h1(input_path: str, model_keys: list[str], device: str = None) -> list[dict]:
-
     print("\n" + "=" * 70)
     print("ГИПОТЕЗА H1: Увеличение размера модели → снижение BPC")
     print("=" * 70)
@@ -96,7 +98,6 @@ def test_h1(input_path: str, model_keys: list[str], device: str = None) -> list[
             print(f"  ОШИБКА: {e}")
             results.append({"method": key, "hypothesis": "H1", "error": str(e)})
 
-
     valid = [r for r in results if "error" not in r]
     if len(valid) >= 2:
         bpcs = [r["bpc"] for r in valid]
@@ -106,8 +107,8 @@ def test_h1(input_path: str, model_keys: list[str], device: str = None) -> list[
 
     return results
 
-def test_h2(input_path: str, device: str = None) -> list[dict]:
 
+def test_h2(input_path: str, device: str = None) -> list[dict]:
     print("\n" + "=" * 70)
     print("ГИПОТЕЗА H2: GPT-2 (124M) < GZIP/BZIP2/LZMA по BPC")
     print("=" * 70)
@@ -127,7 +128,6 @@ def test_h2(input_path: str, device: str = None) -> list[dict]:
 
     results = trad_results + [llm_result]
 
-
     gpt2_bpc = llm_result["bpc"]
     beaten = [r["method"] for r in trad_results if gpt2_bpc < r["bpc"]]
     not_beaten = [r["method"] for r in trad_results if gpt2_bpc >= r["bpc"]]
@@ -140,10 +140,7 @@ def test_h2(input_path: str, device: str = None) -> list[dict]:
     return results
 
 
-
-
 def test_h3(input_path: str, model_keys: list[str], device: str = None) -> list[dict]:
-
     print("\n" + "=" * 70)
     print("ГИПОТЕЗА H3: LLM на порядки медленнее традиционных")
     print("=" * 70)
@@ -183,7 +180,6 @@ def test_h3(input_path: str, model_keys: list[str], device: str = None) -> list[
 
 
 def test_h4(input_path: str, model_key: str = "gpt2", device: str = None) -> list[dict]:
-
     print("\n" + "=" * 70)
     print("ГИПОТЕЗА H4: Скользящее окно > блочное сжатие")
     print(f"  Модель: {model_key}")
@@ -214,23 +210,22 @@ def test_h4(input_path: str, model_key: str = "gpt2", device: str = None) -> lis
 
     return results
 
-
 def save_results(results: list[dict], output_dir: str):
-
     os.makedirs(output_dir, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-    # JSON
     json_path = os.path.join(output_dir, f"results_{timestamp}.json")
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump(results, f, indent=2, ensure_ascii=False, default=str)
     print(f"\nJSON: {json_path}")
 
-
     csv_path = os.path.join(output_dir, f"results_{timestamp}.csv")
     valid = [r for r in results if "error" not in r]
     if valid:
-        keys = list(valid[0].keys())
+        all_keys = set()
+        for r in valid:
+            all_keys.update(r.keys())
+        keys = sorted(all_keys)
         with open(csv_path, "w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=keys, extrasaction="ignore")
             writer.writeheader()
@@ -241,7 +236,6 @@ def save_results(results: list[dict], output_dir: str):
 
 
 def print_summary(results: list[dict]):
-
     valid = [r for r in results if "error" not in r]
     if not valid:
         print("Нет результатов.")
@@ -298,6 +292,8 @@ def main():
         sys.exit(1)
 
     file_size = os.path.getsize(input_path)
+    cache_status = "✓ найден" if os.path.exists(MODELS_CACHE) else "✗ не найден (будет загружать из ~/.cache)"
+
     print(f"{'='*70}")
     print(f"ЭКСПЕРИМЕНТАЛЬНАЯ ПРОВЕРКА ГИПОТЕЗ (Глава 4)")
     print(f"{'='*70}")
@@ -305,6 +301,7 @@ def main():
     print(f"Гипотезы:  {', '.join(args.hypothesis)}")
     print(f"Модели:    {', '.join(args.models)}")
     print(f"Устройство: {args.device or 'auto'}")
+    print(f"Кеш моделей: {MODELS_CACHE} ({cache_status})")
     print(f"{'='*70}")
 
     all_results = []
@@ -325,7 +322,6 @@ def main():
     save_results(all_results, args.output_dir)
 
     print(f"\nЗавершено. Результаты в {args.output_dir}/")
-
 
 if __name__ == "__main__":
     main()

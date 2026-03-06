@@ -16,3 +16,4 @@ venv/
 *.safetensors
 data/
 results/
+models_cache/
